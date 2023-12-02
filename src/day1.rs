@@ -13,7 +13,7 @@ pub fn part1(input: &str) -> u32{
 				return (first_char.repeat(2)).parse::<u32>().unwrap();
 			}
 		}).sum()
-	}
+}
 
 #[aoc(day1, part2)]
 pub fn part2(input: &str) -> u32 {
