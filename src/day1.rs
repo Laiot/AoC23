@@ -1,4 +1,5 @@
 use aoc_runner_derive::aoc;
+use regex::Regex;
 
 #[aoc(day1, part1)]
 pub fn part1(input: &str) -> u32{
@@ -17,5 +18,46 @@ pub fn part1(input: &str) -> u32{
 
 #[aoc(day1, part2)]
 pub fn part2(input: &str) -> u32 {
-    0
+
+    let re = Regex::new(r"\d|one|two|three|four|five|six|seven|eight|nine|zero").unwrap();
+	let mut res = 0;
+
+	for line in input.lines(){
+		let caps = re.find_iter(line)
+			.map(|m| m.as_str())
+			.collect::<Vec<_>>();
+
+		let fst = *caps.first().unwrap();
+		let lst = *caps.last().unwrap_or(&fst);
+		
+		let fst_n: u32 = match fst {
+			"1" | "one"   => 1,
+			"2" | "two"   => 2,
+			"3" | "three" => 3,
+			"4" | "four"  => 4,
+			"5" | "five"  => 5,
+			"6" | "six"   => 6,
+			"7" | "seven" => 7,
+			"8" | "eight" => 8,
+			"9" | "nine"  => 9,
+			_ => unreachable!(),
+		};
+
+		let lst_n: u32 = match lst {
+			"1" | "one"   => 1,
+			"2" | "two"   => 2,
+			"3" | "three" => 3,
+			"4" | "four"  => 4,
+			"5" | "five"  => 5,
+			"6" | "six"   => 6,
+			"7" | "seven" => 7,
+			"8" | "eight" => 8,
+			"9" | "nine"  => 9,
+			_ => unreachable!(),
+		};
+
+        res += (fst_n * 10) + lst_n;
+	}
+
+	res
 }
