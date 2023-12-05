@@ -3,8 +3,7 @@ use aoc_runner_derive::{aoc, aoc_generator};
 #[derive(Debug, Clone)]
 pub struct Card{
     wins: Vec<u32>,
-    ownd: Vec<u32>,
-    copies: usize
+    ownd: Vec<u32>
 }
 
 #[aoc_generator(day4)]
@@ -20,8 +19,7 @@ pub fn day2_gen(input: &str) -> Vec<Card>{
 
         cards.push(Card { 
             wins, 
-            ownd,
-            copies: 1 
+            ownd
         });
     }
     cards
@@ -48,23 +46,36 @@ pub fn part1(cards: &Vec<Card>) -> u32 {
 
 #[aoc(day4, part2)]
 pub fn part2(cards: &Vec<Card>) -> usize {
-    let mut ccards: Vec<Card> = cards.to_vec();
     let mut counter: usize = 0;
     let mut res: usize = 0;
+    let mut copies: Vec<(usize, usize)> = Vec::new();
+
     for (idx, card) in cards.iter().enumerate() {
-        for _ in 0..ccards.get(idx).unwrap().copies {
-            res += 1;
-            for ownd in &card.ownd {
-                if card.wins.contains(&ownd) {
-                    counter += 1;    
-                }
+        for ownd in &card.ownd {
+            if card.wins.contains(&ownd) {
+                counter += 1;    
             }
-            for i in 1..=counter {
-                
-                ccards[idx + i].copies += 1;
-            }
-            counter = 0;
         }
+        copies.push((idx, counter));
+        counter = 0;
+    }
+    
+    let mut copies_trees: Vec<usize> = vec![0; copies.len()];
+    copies.reverse();
+
+    for card in copies{
+
+        copies_trees[card.0] += 1;
+
+        if card.1 > 0 {
+            for i in (card.0 + 1)..=(card.0 + card.1) {
+                copies_trees[card.0] += copies_trees[i];
+            }
+            res += copies_trees[card.0];
+        } else {
+            res += 1;
+        };
+
     }
     res
 }
